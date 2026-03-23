@@ -70,5 +70,5 @@ Here the variables to be used in the Shiny app are selected, and a new data det 
 ```{r}
 week8_tbl |>
   select(gender, timeStart, m_q1_q6, m_q8_q10) |>
-  write_csv("../data/shiny_data.csv")
+  write_csv("../shiny/shiny_week8/shiny_data.csv")
 ```
