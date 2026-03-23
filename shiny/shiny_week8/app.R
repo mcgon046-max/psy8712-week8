@@ -14,7 +14,7 @@ library(dplyr)
 library(readr)
 
 # Dataset 
-shiny_data <- read_csv("shiny_data.csv")
+shiny_data <- read_csv("shiny/shiny_week8/shiny_data.csv")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
