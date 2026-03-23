@@ -5,26 +5,68 @@ date: "2026-03-20"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+# Reproducible Image and Online Resources
+
+```{r}
+
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+# Script Settings and Resources 
+```{r, message = FALSE, warning = FALSE}
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # Working Directory 
+library(tidyverse)
+library(knitr)
 ```
 
-## Including Plots
+# Data Import and Cleaning 
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+This is where the data was imported and cleaned. Time variables were coerced into Posix, factor variables were re-coded according codebook, question 5 was reverse coded, new variables were created for subsequent visualization.
+```{r, message = FALSE}
+week8_tbl <- read_csv("../data/week3.csv") |>
+  mutate(timeStart = ymd_hms(timeStart), 
+         timeEnd = ymd_hms(timeEnd),
+         condition = fct_recode(condition,"Block A" = "A", "Block B" = "B","Control" = "C"),
+         gender = fct_recode(gender, "Male" = "M", "Female" = "F"), 
+         q5 = 6 - q5, 
+         m_q1_q6 = rowMeans(pick(q1:q6), na.rm = TRUE),
+         m_q8_q10 = rowMeans(pick(q8:q10), na.rm = TRUE))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Visualization 
+
+Data for the first six responses is shown and the mean scores of Q8–Q10 were regressed on the mean scores of Q1–Q6.
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+week8_tbl |>
+  select(q1:q6) |>
+  kable(caption = "Responses for Questions 1 through 6")
+week8_tbl |>
+  ggplot(aes(x = m_q1_q6, y = m_q8_q10)) +
+  geom_jitter(width = 0.2, height = 0.2) +
+  geom_smooth(method = "lm", color = "purple", se = TRUE) +
+  labs(title = "Relationship Between Mean Scores of Q1-Q6 and Q8-Q10",
+       x = "Means of Questions 1-6",
+       y = "Means of Questions 8-10")
+```
+
+# Analysis
+
+In this code, a pearson correlation test is run on the previously visualized variables. Afterwards, a reproducible paragraph is generated and can be augmented by new values. 
+```{r}
+# Correlation test between mean scores
+cor <- week8_tbl |>
+  cor.test(formula = ~ m_q1_q6 + m_q8_q10, data = _)
+
+# Correlation value 
+cor_val <- cor$estimate
+
+# P value 
+p_val <- cor$p.value
+```
+
+After running a Pearson correlation test on the mean scores of Q1-Q6 and Q8-Q10, a correlation was estimated at `r sub("^(-?)0\\.", "\\1.", sprintf("%.2f", cor_val))` with a p-value of `r sub("^(-?)0\\.", "\\1.", sprintf("%.3f", p_val))`. This p-value indicates that the probability of observing this correlation by random chance is exceptionally high and thus, the null hypothesis is not rejected and the evidence points to a non-statistically significant relationship between these values. 
+
+# Data Export
+
+```{r}
+
+```
