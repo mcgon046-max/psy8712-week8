@@ -7,9 +7,7 @@ output: html_document
 
 # Reproducible Image and Online Resources
 
-```{r}
 
-```
 
 # Script Settings and Resources 
 ```{r, message = FALSE, warning = FALSE}
@@ -67,6 +65,9 @@ After running a Pearson correlation test on the mean scores of Q1-Q6 and Q8-Q10,
 
 # Data Export
 
+Here the variables to be used in the Shiny app are selected, and a new data det is generated. 
 ```{r}
-
+week8_tbl |>
+  select(gender, timeStart, m_q1_q6, m_q8_q10) |>
+  write_csv("../data/shiny_data.csv")
 ```
