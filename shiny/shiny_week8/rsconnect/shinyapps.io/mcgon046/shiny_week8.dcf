@@ -1,0 +1,12 @@
+name: shiny_week8
+title:
+username: mcgon046
+account: mcgon046
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 16949780
+bundleId: 11746860
+url: https://mcgon046.shinyapps.io/shiny_week8/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
